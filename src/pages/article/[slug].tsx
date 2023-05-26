@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import { GetServerSideProps, NextPage } from 'next';
-import { ParsedUrlQuery } from 'querystring';
+import { useSelector } from 'react-redux';
+import { State } from '@/store/store';
 
 interface Article {
   slug: string;
@@ -23,16 +23,10 @@ interface Article {
   };
 }
 
-interface Props {
-  article: Article | null;
-}
-
-const ArticlePage: NextPage<Props> = ({ article }) => {
-  const router = useRouter();
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
+const ArticlePage: NextPage<{ article: Article; isLogin: boolean }> = ({
+  article,
+  isLogin,
+}) => {
   if (!article) {
     return <div>Post not found</div>;
   }
@@ -51,7 +45,7 @@ const ArticlePage: NextPage<Props> = ({ article }) => {
               <a href='' className='author'>
                 Eric Simons
               </a>
-              <span className='date'>January 20th</span>
+              <span className='date'>{isLogin}</span>
             </div>
             <button className='btn btn-sm btn-outline-secondary'>
               <i className='ion-plus-round'></i>
@@ -175,12 +169,13 @@ const ArticlePage: NextPage<Props> = ({ article }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<
-  Props,
-  ParsedUrlQuery
-> = async (context) => {
+export const getServerSideProps: GetServerSideProps<{
+  article: Article;
+  isLogin: boolean;
+}> = async (context) => {
   const { params } = context;
   const slug = params?.slug;
+  const { isLogin } = useSelector<State, State>((state) => state);
 
   // slug를 사용하여 서버에서 해당 포스트 데이터 가져오기
   const url = `https://api.realworld.io/api/articles/${slug}`;
@@ -193,14 +188,14 @@ export const getServerSideProps: GetServerSideProps<
       headers: headers,
     });
     if (res.status === 200) {
-      return { props: { article: res.data.article } };
+      return { props: { article: res.data.article, isLogin: isLogin } };
     }
   } catch (err) {
-    return { props: { article: null } };
+    return { props: { article: null, isLogin: isLogin } };
   }
 
   // 데이터 가져오기에 실패한 경우
-  return { props: { article: null } };
+  return { props: { article: null, isLogin: isLogin } };
 };
 
 export default ArticlePage;
