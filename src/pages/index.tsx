@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 // import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -34,11 +33,11 @@ export default function Home() {
       })
       .then((response) => {
         setArticleList(response.data.articles);
-        console.log(
-          response.data.articles.map((a: Article) => {
-            return a.tagList;
-          })
-        );
+        // console.log(
+        //   response.data.articles.map((a: Article) => {
+        //     return a.tagList;
+        //   })
+        // );
         setTagMap(
           response.data.articles.reduce(
             (acc: Map<string, number>, cur: Article) => {

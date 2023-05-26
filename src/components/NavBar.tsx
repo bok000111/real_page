@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { wrapper, State } from '@/store/store';
 
 export default function NavBar() {
+  const { isLogin } = useSelector<State, State>((state) => state);
+  const dispatch = useDispatch();
   useEffect(() => {
     console.log('NavBar rerendered');
   });
-  const [isLogin, setLogin] = useState(false);
+
   return (
     <nav className='navbar navbar-light'>
       <div className='container'>
@@ -16,12 +20,12 @@ export default function NavBar() {
       </div>
       <button
         className='btn btn-outline-primary'
-        onClick={() => setLogin(true)}>
+        onClick={() => dispatch({ type: 'SETLOGIN', payload: true })}>
         setLogin
       </button>
       <button
         className='btn btn-outline-primary'
-        onClick={() => setLogin(false)}>
+        onClick={() => dispatch({ type: 'SETLOGIN', payload: false })}>
         setLogout
       </button>
       <NavList isLogin={isLogin} />

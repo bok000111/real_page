@@ -6,17 +6,20 @@ import { configureStore } from '@reduxjs/toolkit';
 
 export interface State {
   isLogin: boolean;
-  tick: string;
 }
 
 // create your reducer
-const reducer = (state: State = { tick: 'init' }, action: AnyAction) => {
+const reducer = (state: State = { isLogin: false }, action: AnyAction) => {
   switch (action.type) {
     case HYDRATE:
-      // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-      return { ...state, ...action.payload };
-    case 'TICK':
-      return { ...state, tick: action.payload };
+      const nextState = {
+        ...state, // use previous state
+        ...action.payload, // apply delta from hydration
+      };
+      if (state.isLogin) nextState.count = state.isLogin; // preserve count value on client side navigation
+      return nextState;
+    case 'SETLOGIN':
+      return { ...state, isLogin: action.payload };
     default:
       return state;
   }

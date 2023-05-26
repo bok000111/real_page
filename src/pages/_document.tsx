@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang='en'>
       <Head>
         <meta charSet='utf-8' />
-        <title>Conduit</title>
         <link
           href='//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'
           rel='stylesheet'
