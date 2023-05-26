@@ -23,10 +23,7 @@ interface Article {
   };
 }
 
-const ArticlePage: NextPage<{ article: Article; isLogin: boolean }> = ({
-  article,
-  isLogin,
-}) => {
+const ArticlePage: NextPage<{ article: Article }> = ({ article }) => {
   if (!article) {
     return <div>Post not found</div>;
   }
@@ -45,7 +42,7 @@ const ArticlePage: NextPage<{ article: Article; isLogin: boolean }> = ({
               <a href='' className='author'>
                 Eric Simons
               </a>
-              <span className='date'>{isLogin}</span>
+              <span className='date'>1</span>
             </div>
             <button className='btn btn-sm btn-outline-secondary'>
               <i className='ion-plus-round'></i>
@@ -171,11 +168,9 @@ const ArticlePage: NextPage<{ article: Article; isLogin: boolean }> = ({
 
 export const getServerSideProps: GetServerSideProps<{
   article: Article;
-  isLogin: boolean;
 }> = async (context) => {
   const { params } = context;
   const slug = params?.slug;
-  const { isLogin } = useSelector<State, State>((state) => state);
 
   // slug를 사용하여 서버에서 해당 포스트 데이터 가져오기
   const url = `https://api.realworld.io/api/articles/${slug}`;
@@ -188,14 +183,14 @@ export const getServerSideProps: GetServerSideProps<{
       headers: headers,
     });
     if (res.status === 200) {
-      return { props: { article: res.data.article, isLogin: isLogin } };
+      return { props: { article: res.data.article } };
     }
   } catch (err) {
-    return { props: { article: null, isLogin: isLogin } };
+    return { props: { article: null } };
   }
 
   // 데이터 가져오기에 실패한 경우
-  return { props: { article: null, isLogin: isLogin } };
+  return { props: { article: null } };
 };
 
 export default ArticlePage;
