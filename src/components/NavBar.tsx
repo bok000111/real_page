@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { wrapper, State } from '@/store/store';
+
+import { RootState } from '@/reducers';
+import { setUser } from '@/reducers/authReducer';
 
 export default function NavBar() {
-  const { isLogin } = useSelector<State, State>((state) => state);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
   useEffect(() => {
     console.log('NavBar rerendered');
@@ -20,24 +22,24 @@ export default function NavBar() {
       </div>
       <button
         className='btn btn-outline-primary'
-        onClick={() => dispatch({ type: 'SETLOGIN', payload: true })}>
+        onClick={() => dispatch(setUser({ name: 'bok' }))}>
         setLogin
       </button>
       <button
         className='btn btn-outline-primary'
-        onClick={() => dispatch({ type: 'SETLOGIN', payload: false })}>
+        onClick={() => dispatch(setUser(undefined))}>
         setLogout
       </button>
-      <NavList isLogin={isLogin} />
+      <NavList user={user} />
     </nav>
   );
 }
 
-function NavList({ isLogin }: { isLogin: boolean }) {
+function NavList({ user }: { user?: {} }) {
   useEffect(() => {
     console.log('NavList rerendered');
   });
-  if (isLogin) {
+  if (user !== undefined) {
     return <NavListLogin />;
   } else {
     return <NavListGuest />;

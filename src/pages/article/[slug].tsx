@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSelector } from 'react-redux';
-import { State } from '@/store/store';
 
 interface Article {
   slug: string;
