@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 type Setter<T> = (param: T) => void;
 
-export default function Register() {
+export default function Login() {
   const [errors, setErrors] = useState<[string, [string]][]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
   const router = useRouter();
@@ -19,16 +19,18 @@ export default function Register() {
   }, [user]);
 
   function formSubmitHandler(data: {}) {
-    const url = 'https://api.realworld.io/api/users';
+    const url = 'https://api.realworld.io/api/users/login';
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
+    console.log(data);
     axios
       .post(url, data, {
         headers: headers,
       })
       .then((response) => {
+        console.log(response.data.user.token);
         console.log(
           response.data.user.token.split('.').map((s: string) => {
             btoa(s);
@@ -51,9 +53,6 @@ export default function Register() {
         <div className='row'>
           <div className='col-md-6 offset-md-3 col-xs-12'>
             <h1 className='text-xs-center'>Sign up</h1>
-            <p className='text-xs-center'>
-              <Link href='/login'>Have an account?</Link>
-            </p>
             <TakenError errors={errors} />
             <SignInForm handler={formSubmitHandler} />
           </div>
@@ -84,13 +83,11 @@ function TakenError({ errors }: { errors: [string, [string]][] }) {
 }
 
 function SignInForm({ handler }: { handler: (data: {}) => void }) {
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
 
   return (
     <form>
-      <FormTextInput placeholder='Your Name' setter={setName} />
       <FormTextInput placeholder='Email' setter={setEmail} />
       <FormPassInput placeholder='Password' setter={setPass} />
       <button
@@ -100,7 +97,6 @@ function SignInForm({ handler }: { handler: (data: {}) => void }) {
           e.preventDefault();
           handler({
             user: {
-              username: name,
               email: email,
               password: pass,
             },
