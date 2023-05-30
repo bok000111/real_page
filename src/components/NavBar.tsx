@@ -20,16 +20,6 @@ export default function NavBar() {
           conduit
         </Link>
       </div>
-      <button
-        className='btn btn-outline-primary'
-        onClick={() => dispatch(setUser({ name: 'bok' }))}>
-        setLogin
-      </button>
-      <button
-        className='btn btn-outline-primary'
-        onClick={() => dispatch(setUser(undefined))}>
-        setLogout
-      </button>
       <NavList user={user} />
     </nav>
   );

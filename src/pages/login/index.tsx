@@ -1,11 +1,10 @@
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 import { RootState } from '@/reducers';
 import { setUser } from '@/reducers/authReducer';
-import { useRouter } from 'next/navigation';
 
 type Setter<T> = (param: T) => void;
 

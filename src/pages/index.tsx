@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-// import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 type Article = {
@@ -11,6 +10,8 @@ type Article = {
   tagList: string[];
   favorited: boolean;
   favoritesCount: number;
+  createdAt: Date;
+  updatedAt: Date;
   author: {
     username: string;
     bio: string | null;
@@ -32,12 +33,17 @@ export default function Home() {
         headers: headers,
       })
       .then((response) => {
-        setArticleList(response.data.articles);
-        // console.log(
-        //   response.data.articles.map((a: Article) => {
-        //     return a.tagList;
-        //   })
-        // );
+        setArticleList(
+          response.data.articles.map(
+            (article: { createdAt: string; updatedAt: string }) => {
+              return {
+                ...article,
+                createdAt: new Date(article.createdAt),
+                updatedAt: new Date(article.updatedAt),
+              };
+            }
+          )
+        );
         setTagMap(
           response.data.articles.reduce(
             (acc: Map<string, number>, cur: Article) => {
@@ -64,8 +70,8 @@ export default function Home() {
   }, []);
   return (
     <div className='home-page'>
+      <Banner />
       <div className='container page'>
-        <Banner />
         <div className='row'>
           <div className='col-md-9'>
             <FeedToggle />
@@ -127,7 +133,7 @@ function ArticlePreview({ article }: { article: Article }) {
           <Link href='' className='author'>
             {article.author.username}
           </Link>
-          <span className='date'>January 20th</span>
+          <span className='date'>{article.createdAt.toDateString()}</span>
         </div>
         <button className='btn btn-outline-primary btn-sm pull-xs-right'>
           <i className='ion-heart'></i> {article.favoritesCount}
